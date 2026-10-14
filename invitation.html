@@ -1,0 +1,557 @@
+<title>دعوت امشب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;700;800&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+  /* Layout: one love-letter card centered in a light sky with drifting clouds; a sky-blue heart mascot sits on its top edge like a wax seal.
+     The "No" button breaks out to fixed positioning the moment it flees. Single light-sky theme, chosen on purpose. */
+  :root {
+    --sky-top: #eef9ff;
+    --sky: #c7e9fb;
+    --sky-low: #9dd5f3;
+    --cloud: #f9fdff;
+    --ink: #173a5a;
+    --ink-soft: #4d6f8e;
+    --azure: #2f98da;
+    --azure-deep: #1a74b4;
+    --blush: #ffa9c1;
+    --font-display: "Lalezar", "Vazirmatn", Tahoma, system-ui, sans-serif;
+    --font-body: "Vazirmatn", Tahoma, system-ui, sans-serif;
+    color-scheme: light;
+  }
+
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--sky);
+    background-image:
+      radial-gradient(90% 55% at 80% 4%, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, 0) 60%),
+      linear-gradient(176deg, var(--sky-top) 0%, var(--sky) 50%, var(--sky-low) 100%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  #scene {
+    padding-inline: 16px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 56px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+  }
+
+  /* ambient floating hearts */
+  .float-heart {
+    position: absolute;
+    bottom: -40px;
+    width: var(--s);
+    height: var(--s);
+    opacity: .0;
+    animation: rise var(--d) linear var(--delay) infinite;
+  }
+  .float-heart svg { width: 100%; height: 100%; fill: var(--c); }
+  @keyframes rise {
+    0%   { transform: translate(0, 0) rotate(-8deg); opacity: 0; }
+    12%  { opacity: var(--o); }
+    50%  { transform: translate(18px, -55vh) rotate(8deg); }
+    88%  { opacity: var(--o); }
+    100% { transform: translate(-10px, -110vh) rotate(-6deg); opacity: 0; }
+  }
+
+  /* drifting clouds */
+  .cloud {
+    position: absolute;
+    left: 0;
+    width: var(--w);
+    opacity: var(--o);
+    animation: drift var(--d) linear var(--delay) infinite;
+  }
+  .cloud svg { display: block; width: 100%; height: auto; fill: var(--cloud); }
+  @keyframes drift {
+    from { transform: translateX(calc(-1 * var(--w) - 20px)); }
+    to   { transform: translateX(calc(100vw + 20px)); }
+  }
+
+  /* the card */
+  .card {
+    background: var(--cloud);
+    border-radius: 30px;
+    padding: 64px 22px 26px;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, .95) inset,
+      0 24px 50px -18px rgba(26, 116, 180, .4),
+      0 6px 16px -8px rgba(26, 116, 180, .25);
+    animation: cardIn .7s cubic-bezier(.2, .9, .3, 1.2) both;
+  }
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border-radius: 22px;
+    border: 1.5px dashed rgba(47, 152, 218, .28);
+    pointer-events: none;
+  }
+  @keyframes cardIn {
+    from { transform: translateY(18px) scale(.97); opacity: .4; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  .mascot {
+    position: absolute;
+    top: -48px;
+    left: 50%;
+    width: 96px;
+    margin-left: -48px;
+    filter: drop-shadow(0 10px 14px rgba(26, 116, 180, .35));
+    animation: bob 3.2s ease-in-out infinite;
+  }
+  .mascot svg { display: block; width: 100%; height: auto; animation: beat 1.6s ease-in-out infinite; transform-origin: 50% 60%; }
+  .mascot .eyes-happy { display: none; }
+  .mascot.happy .eyes-open { display: none; }
+  .mascot.happy .eyes-happy { display: inline; }
+  .mascot.happy svg { animation-duration: .7s; }
+  .mascot.worried svg { animation: wobble .45s ease-in-out; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @keyframes beat { 0%, 100% { transform: scale(1); } 14% { transform: scale(1.08); } 28% { transform: scale(1); } 42% { transform: scale(1.06); } }
+  @keyframes wobble { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-10deg); } 75% { transform: rotate(10deg); } }
+
+  .eyebrow {
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: .01em;
+  }
+  .title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.05rem, 9.5vw, 2.6rem);
+    line-height: 1.32;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .title .hl { color: var(--azure); }
+  .sub {
+    font-size: .95rem;
+    line-height: 1.85;
+    color: var(--ink-soft);
+    max-width: 30ch;
+    margin-inline: auto;
+  }
+
+  .actions { min-height: 92px; }
+
+  .btn-yes {
+    --grow: 1;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 1;
+    color: #fff;
+    padding: 18px 46px 16px;
+    border-radius: 999px;
+    background: linear-gradient(160deg, #5bbcf0 0%, var(--azure) 45%, var(--azure-deep) 100%);
+    box-shadow: 0 12px 24px -10px rgba(26, 116, 180, .7), 0 -3px 0 rgba(0, 0, 0, .08) inset, 0 2px 0 rgba(255, 255, 255, .4) inset;
+    transform: scale(var(--grow));
+    transition: transform .35s cubic-bezier(.2, .9, .3, 1.4), box-shadow .2s;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+  }
+  .btn-yes:active { transform: scale(calc(var(--grow) * .95)); }
+  .btn-yes::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: inherit;
+    border: 2px solid rgba(47, 152, 218, .4);
+    animation: ring 2s ease-out infinite;
+  }
+  @keyframes ring { 0% { transform: scale(.92); opacity: 1; } 100% { transform: scale(1.18); opacity: 0; } }
+
+  .btn-no {
+    --tilt: 0deg;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    padding: 11px 24px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1.5px solid rgba(77, 111, 142, .3);
+    box-shadow: 0 6px 14px -8px rgba(23, 58, 90, .35);
+    cursor: pointer;
+    transform: rotate(var(--tilt));
+  }
+  .btn-no.fled {
+    position: fixed;
+    z-index: 50;
+    margin: 0;
+    transition: left .2s cubic-bezier(.3, 1.4, .5, 1), top .2s cubic-bezier(.3, 1.4, .5, 1), transform .2s;
+  }
+
+  .btn-yes:focus-visible, .btn-no:focus-visible {
+    outline: 3px solid var(--blush);
+    outline-offset: 4px;
+  }
+
+  .tease {
+    min-height: 1.6em;
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--azure-deep);
+  }
+  .tease.pop { animation: pop .35s cubic-bezier(.2, .9, .3, 1.5); }
+  @keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  /* success state */
+  .done { animation: doneIn .6s cubic-bezier(.2, .9, .3, 1.3) both; }
+  .done-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 14vw, 3.4rem);
+    line-height: 1.2;
+    color: var(--azure);
+  }
+  .done-msg {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 6.6vw, 1.75rem);
+    line-height: 1.6;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .done-note { font-size: .92rem; line-height: 1.8; color: var(--ink-soft); }
+  @keyframes doneIn { from { transform: scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  #fx { z-index: 40; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .float-heart, .cloud, .mascot, .mascot svg, .btn-yes::before, .card { animation: none !important; }
+    .cloud { transform: translateX(var(--rest)); }
+    .float-heart { opacity: var(--o); bottom: auto; top: var(--top); }
+  }
+</style>
+
+<div id="ambient" class="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true"></div>
+
+<main id="scene" dir="rtl" lang="fa" class="fixed inset-0 z-10 flex items-center justify-center">
+  <section class="card relative w-full max-w-sm text-center">
+    <div id="mascot" class="mascot" aria-hidden="true">
+      <svg viewBox="0 0 100 92">
+        <defs>
+          <linearGradient id="hg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#8fd4f7"/>
+            <stop offset="1" stop-color="#2f98da"/>
+          </linearGradient>
+        </defs>
+        <path d="M50 88 C 20 66, 4 46, 4 28 C 4 14, 15 4, 28 4 C 38 4, 46 10, 50 18 C 54 10, 62 4, 72 4 C 85 4, 96 14, 96 28 C 96 46, 80 66, 50 88 Z" fill="url(#hg)"/>
+        <ellipse cx="24" cy="20" rx="7" ry="4.5" fill="#fff" opacity=".55" transform="rotate(-30 24 20)"/>
+        <g class="eyes-open" fill="#123250">
+          <ellipse cx="37" cy="38" rx="4" ry="5"/>
+          <ellipse cx="63" cy="38" rx="4" ry="5"/>
+          <circle cx="38.4" cy="36.2" r="1.4" fill="#fff"/>
+          <circle cx="64.4" cy="36.2" r="1.4" fill="#fff"/>
+        </g>
+        <g class="eyes-happy" fill="none" stroke="#123250" stroke-width="3" stroke-linecap="round">
+          <path d="M32 40 Q37 33 42 40"/>
+          <path d="M58 40 Q63 33 68 40"/>
+        </g>
+        <ellipse cx="28" cy="49" rx="6" ry="3.6" fill="#ffb3c6" opacity=".9"/>
+        <ellipse cx="72" cy="49" rx="6" ry="3.6" fill="#ffb3c6" opacity=".9"/>
+        <path d="M43 49 Q50 57 57 49" fill="none" stroke="#123250" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div id="ask" class="flex flex-col gap-4">
+      <p class="eyebrow">یه دعوت‌نامه‌ی کوچولو، فقط برای تو</p>
+      <h1 class="title">عشق من،<br><span class="hl">امشب</span> بریم بیرون؟</h1>
+      <p class="sub">یه قدم زدن آروم زیر چراغای شهر، و کلی خنده.</p>
+
+      <div class="actions mt-2 flex items-center justify-center gap-4">
+        <button id="yes" type="button" class="btn-yes">آره</button>
+        <button id="no" type="button" class="btn-no">نه</button>
+      </div>
+
+      <p id="tease" class="tease" aria-live="polite"></p>
+    </div>
+
+    <div id="done" class="done flex flex-col gap-3 py-2" hidden>
+      <p class="done-title">هورااا!</p>
+      <p class="done-msg">پس حاضر باش که بیام دنبالت! ❤️✨</p>
+      <p class="done-note">یه لباس خوشگل بپوش، بقیه‌ش با من.</p>
+    </div>
+  </section>
+</main>
+
+<canvas id="fx" class="fixed inset-0 pointer-events-none" aria-hidden="true"></canvas>
+
+<script>
+(() => {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const HEART_PATH = 'M50 88 C 20 66, 4 46, 4 28 C 4 14, 15 4, 28 4 C 38 4, 46 10, 50 18 C 54 10, 62 4, 72 4 C 85 4, 96 14, 96 28 C 96 46, 80 66, 50 88 Z';
+
+  /* ---------- ambient hearts ---------- */
+  const ambient = document.getElementById('ambient');
+  const clouds = [
+    { top: '7%',  w: 120, d: 70, o: .9 },
+    { top: '19%', w: 78,  d: 55, o: .75 },
+    { top: '74%', w: 150, d: 90, o: .8 },
+    { top: '88%', w: 96,  d: 65, o: .7 }
+  ];
+  clouds.forEach((c) => {
+    const el = document.createElement('div');
+    el.className = 'cloud';
+    const at = Math.random();
+    el.style.cssText =
+      `top:${c.top};--w:${c.w}px;--d:${c.d}s;--delay:${-at * c.d}s;--o:${c.o};--rest:${(at * 90).toFixed(0)}vw`;
+    el.innerHTML =
+      '<svg viewBox="0 0 120 64"><circle cx="34" cy="42" r="18"/><circle cx="60" cy="30" r="24"/>' +
+      '<circle cx="88" cy="42" r="18"/><rect x="34" y="40" width="54" height="20" rx="10"/></svg>';
+    ambient.appendChild(el);
+  });
+
+  const tints = ['#ffffff', '#ffffff', '#7cc6f0', '#ffb8cb'];
+  for (let i = 0; i < 14; i++) {
+    const el = document.createElement('div');
+    el.className = 'float-heart';
+    const size = 12 + Math.random() * 22;
+    const dur = 11 + Math.random() * 10;
+    el.style.cssText =
+      `left:${Math.random() * 100}%;--s:${size}px;--d:${dur}s;--delay:${-Math.random() * dur}s;` +
+      `--c:${tints[i % tints.length]};--o:${(.35 + Math.random() * .4).toFixed(2)};--top:${Math.random() * 100}%`;
+    el.innerHTML = `<svg viewBox="0 0 100 92"><path d="${HEART_PATH}"/></svg>`;
+    ambient.appendChild(el);
+  }
+
+  /* ---------- the runaway "No" ---------- */
+  const noBtn = document.getElementById('no');
+  const yesBtn = document.getElementById('yes');
+  const tease = document.getElementById('tease');
+  const mascot = document.getElementById('mascot');
+
+  const teases = [
+    'اِ! کجا در رفت؟',
+    'اون دکمه امشب خجالتیه 🙈',
+    'نچ، اون یکی رو بزن',
+    'دکمه‌ی «نه» امشب مرخصیه',
+    'می‌دونم ته دلت گفتی آره',
+    'هرچی بدویی، «آره» نزدیک‌تره',
+    'قول می‌دم بستنی هم بخریم 🍦',
+    'دیگه داره خسته می‌شه‌ها!'
+  ];
+
+  let fled = false;
+  let tries = 0;
+  let lastDodge = 0;
+  let celebrated = false;
+  const MARGIN = 14;
+
+  function pointFrom(e, fallback) {
+    if (e && e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    if (e && typeof e.clientX === 'number' && (e.clientX || e.clientY)) return { x: e.clientX, y: e.clientY };
+    return fallback;
+  }
+
+  function overlaps(x, y, w, h, r, pad) {
+    return !(x + w < r.left - pad || x > r.right + pad || y + h < r.top - pad || y > r.bottom + pad);
+  }
+
+  function dodge(e) {
+    if (celebrated) return;
+    if (e) {
+      if (e.cancelable) e.preventDefault();
+      e.stopPropagation();
+    }
+    const now = performance.now();
+    if (now - lastDodge < 120) return;
+    lastDodge = now;
+
+    const r = noBtn.getBoundingClientRect();
+    const finger = pointFrom(e, { x: r.left + r.width / 2, y: r.top + r.height / 2 });
+
+    if (!fled) {
+      noBtn.style.left = r.left + 'px';
+      noBtn.style.top = r.top + 'px';
+      noBtn.classList.add('fled');
+      fled = true;
+      void noBtn.offsetWidth; // lock the starting point so the first jump animates
+    }
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const w = r.width;
+    const h = r.height;
+    const yesRect = yesBtn.getBoundingClientRect();
+    const farEnough = Math.min(vw, vh) * 0.4;
+
+    let best = null;
+    let bestDist = -1;
+    for (let i = 0; i < 50; i++) {
+      const x = MARGIN + Math.random() * Math.max(0, vw - w - MARGIN * 2);
+      const y = MARGIN + Math.random() * Math.max(0, vh - h - MARGIN * 2);
+      if (overlaps(x, y, w, h, yesRect, 16)) continue;
+      const dist = Math.hypot(x + w / 2 - finger.x, y + h / 2 - finger.y);
+      if (dist > farEnough) { best = { x, y }; break; }
+      if (dist > bestDist) { bestDist = dist; best = { x, y }; }
+    }
+    if (!best) best = { x: MARGIN, y: MARGIN };
+
+    noBtn.style.left = best.x + 'px';
+    noBtn.style.top = best.y + 'px';
+    noBtn.style.setProperty('--tilt', (Math.random() * 24 - 12).toFixed(1) + 'deg');
+
+    tries++;
+    tease.textContent = teases[(tries - 1) % teases.length];
+    tease.classList.remove('pop');
+    void tease.offsetWidth;
+    tease.classList.add('pop');
+
+    yesBtn.style.setProperty('--grow', Math.min(1 + tries * 0.05, 1.35).toFixed(2));
+
+    mascot.classList.remove('worried');
+    void mascot.offsetWidth;
+    mascot.classList.add('worried');
+  }
+
+  noBtn.addEventListener('touchstart', dodge, { passive: false });
+  noBtn.addEventListener('pointerdown', dodge);
+  noBtn.addEventListener('mousedown', dodge);
+  noBtn.addEventListener('click', dodge);
+  noBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') dodge(e);
+  });
+
+  // On a desktop mouse, it flees before the cursor even arrives.
+  document.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse' || celebrated) return;
+    const r = noBtn.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    if (Math.hypot(e.clientX - cx, e.clientY - cy) < Math.max(r.width, r.height) * 0.9) dodge(e);
+  });
+
+  // Keep it on screen if the viewport changes (rotation, keyboard, resize).
+  window.addEventListener('resize', () => {
+    if (!fled) return;
+    const r = noBtn.getBoundingClientRect();
+    const x = Math.min(Math.max(MARGIN, r.left), window.innerWidth - r.width - MARGIN);
+    const y = Math.min(Math.max(MARGIN, r.top), window.innerHeight - r.height - MARGIN);
+    noBtn.style.left = Math.max(MARGIN, x) + 'px';
+    noBtn.style.top = Math.max(MARGIN, y) + 'px';
+  });
+
+  /* ---------- the "Yes" celebration ---------- */
+  const ask = document.getElementById('ask');
+  const done = document.getElementById('done');
+
+  yesBtn.addEventListener('click', () => {
+    if (celebrated) return;
+    celebrated = true;
+    noBtn.hidden = true;
+    ask.hidden = true;
+    done.hidden = false;
+    mascot.classList.remove('worried');
+    mascot.classList.add('happy');
+    startFx();
+  });
+
+  const cv = document.getElementById('fx');
+  const ctx = cv.getContext('2d');
+  const colors = ['#2f98da', '#5bbcf0', '#9fdcfb', '#1a74b4', '#ffffff', '#ffffff', '#ffa9c1', '#ffd88a'];
+  const parts = [];
+  let W = 0, H = 0;
+
+  function size() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    cv.width = W * dpr;
+    cv.height = H * dpr;
+    cv.style.width = W + 'px';
+    cv.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function make(fromBurst) {
+    const isHeart = Math.random() < 0.5;
+    const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.1;
+    const speed = 6 + Math.random() * 9;
+    return {
+      x: fromBurst ? W / 2 : Math.random() * W,
+      y: fromBurst ? H * 0.45 : -30 - Math.random() * 60,
+      vx: fromBurst ? Math.cos(angle) * speed : (Math.random() - 0.5) * 1.2,
+      vy: fromBurst ? Math.sin(angle) * speed : 1 + Math.random() * 2,
+      term: isHeart ? 1.6 + Math.random() * 1.4 : 2.4 + Math.random() * 1.8,
+      s: isHeart ? 12 + Math.random() * 16 : 6 + Math.random() * 7,
+      rot: Math.random() * Math.PI * 2,
+      vr: (Math.random() - 0.5) * 0.12,
+      phase: Math.random() * Math.PI * 2,
+      color: colors[(Math.random() * colors.length) | 0],
+      heart: isHeart
+    };
+  }
+
+  function drawHeart(s) {
+    const h = s;
+    ctx.beginPath();
+    ctx.moveTo(0, -h * 0.2);
+    ctx.bezierCurveTo(0, -h * 0.5, -h * 0.5, -h * 0.5, -h * 0.5, -h * 0.2);
+    ctx.bezierCurveTo(-h * 0.5, h * 0.1, 0, h * 0.3, 0, h * 0.5);
+    ctx.bezierCurveTo(0, h * 0.3, h * 0.5, h * 0.1, h * 0.5, -h * 0.2);
+    ctx.bezierCurveTo(h * 0.5, -h * 0.5, 0, -h * 0.5, 0, -h * 0.2);
+    ctx.fill();
+  }
+
+  function startFx() {
+    size();
+    window.addEventListener('resize', size);
+
+    const burst = reduceMotion ? 0 : 110;
+    for (let i = 0; i < burst; i++) parts.push(make(true));
+
+    const start = performance.now();
+    let last = start;
+    let rainAcc = 0;
+
+    function frame(now) {
+      const f = Math.min((now - last) / 16.67, 3);
+      last = now;
+      const t = now - start;
+
+      // heavy rain for the first few seconds, then a gentle, endless drift of hearts
+      const rate = t < 4500 ? (reduceMotion ? 0.6 : 3.2) : (reduceMotion ? 0.04 : 0.12);
+      rainAcc += rate * f;
+      while (rainAcc >= 1 && parts.length < 380) { parts.push(make(false)); rainAcc--; }
+
+      ctx.clearRect(0, 0, W, H);
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i];
+        p.vx *= Math.pow(0.985, f);
+        p.vy = Math.min(p.vy + 0.18 * f, p.term);
+        p.phase += 0.05 * f;
+        p.x += (p.vx + Math.sin(p.phase) * 0.7) * f;
+        p.y += p.vy * f;
+        p.rot += p.vr * f;
+
+        if (p.y > H + 40) { parts.splice(i, 1); continue; }
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.fillStyle = p.color;
+        if (p.heart) {
+          ctx.rotate(Math.sin(p.phase) * 0.35);
+          drawHeart(p.s);
+        } else {
+          ctx.rotate(p.rot);
+          ctx.scale(1, Math.cos(p.phase * 2));
+          ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
+        }
+        ctx.restore();
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+})();
+</script>
